@@ -1,0 +1,47 @@
+# Local development stack. Run with: docker compose up --build
+#
+# Source is bind-mounted so code changes apply without a rebuild. vendor and
+# node_modules live in named volumes so the host's OS and PHP/Node versions
+# can't affect them. Ports bind to localhost only.
+
+services:
+  api:
+    build: ./backend
+    volumes:
+      - ./backend:/app
+      - api-vendor:/app/vendor
+      - api-data:/data
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      - mailpit
+    healthcheck:
+      test: ["CMD", "php", "-r", "exit(@file_get_contents('http://127.0.0.1:8000/api/health') === false ? 1 : 0);"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 90s
+
+  web:
+    build: ./frontend
+    environment:
+      API_PROXY_TARGET: http://api:8000
+    volumes:
+      - ./frontend:/app
+      - web-node-modules:/app/node_modules
+    ports:
+      - "127.0.0.1:5173:5173"
+    depends_on:
+      api:
+        condition: service_healthy
+
+  # Catches all outgoing mail. Inbox UI: http://localhost:8025
+  mailpit:
+    image: axllent/mailpit:v1.33.0
+    ports:
+      - "127.0.0.1:8025:8025"
+
+volumes:
+  api-vendor:
+  api-data:
+  web-node-modules:
