@@ -5,9 +5,6 @@
          colors="true"
 >
     <testsuites>
-        <testsuite name="Unit">
-            <directory>tests/Unit</directory>
-        </testsuite>
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
         </testsuite>
@@ -23,6 +20,11 @@
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="BROADCAST_CONNECTION" value="null"/>
         <env name="CACHE_STORE" value="array"/>
+        <env name="CATALOGUE_DRIVER" value="fixture"/>
+        <env name="FEATURED_PRODUCT_IDS" value="3,5,11,12,18"/>
+        <env name="CATEGORY_TOP_RATED_COUNT" value="3"/>
+        <env name="SALES_INBOX_ADDRESS" value="sales@example.com"/>
+        <env name="LOG_CHANNEL" value="null"/>
         <env name="DB_CONNECTION" value="sqlite"/>
         <env name="DB_DATABASE" value=":memory:"/>
         <env name="DB_URL" value=""/>
