@@ -34,6 +34,9 @@ export function ProductPage() {
         <p className="product__price">{formatPrice(product.price)}</p>
         <ProductRating rating={product.rating} />
         <p>{product.description}</p>
+        <Link to={`/products/${product.id}/enquire`} className="button">
+          Enquire
+        </Link>
       </div>
     </article>
   )

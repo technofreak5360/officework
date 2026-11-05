@@ -35,6 +35,8 @@
 
 ### Enquiry
 - Name and email are required. Phone and message are optional.
+- The form is its own page (`/products/:id/enquire`), so it can be linked to and needs no modal handling.
+- Validation rules live only in the API, and the form shows the API's messages next to each field. This keeps one set of rules, at the cost of a request to find out a field is empty.
 - The enquiry is saved before the email is sent. If sending fails, the failure is logged and recorded on the enquiry, and the customer still sees "Thank you", because the lead is kept.
 - The product name in the email is looked up on the server, so a client can't fake it.
 - Replying to the email goes to the customer.
@@ -83,8 +85,8 @@ The brief names three things that will change. Each has one place to change it:
 ## Testing approach
 
 - **Backend (63 tests):** every endpoint, the same contract tests on both sources, upstream failures, mail failure and rate limiting. Tests can't reach the real Fake Store API.
-- **Frontend (22 tests):** these render the whole app and follow the acceptance criteria journeys, using a stubbed `fetch`.
-- **Do the tests catch bugs?** I had deliberate bugs put into the code to check: the tests caught all 12 in the backend and all 14 in the frontend. These were spot checks, not full mutation testing.
+- **Frontend (30 tests):** these render the whole app and follow the acceptance criteria journeys, using a stubbed `fetch`.
+- **Do the tests catch bugs?** I had deliberate bugs put into the code to check: the tests caught all 12 in the backend and all 25 in the frontend. These were spot checks, not full mutation testing.
 - **Limits:** no automated test covers real layout, real image loading or the real browser. Those are manual checks for now.
 
 ## With another day

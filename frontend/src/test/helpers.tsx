@@ -35,15 +35,25 @@ export function failure(status: number, body: unknown = 'Server error'): MockRes
   return { status, body }
 }
 
+/** A response that never arrives, for checking in-progress states. */
+export function pending(): Promise<MockResponse> {
+  return new Promise(() => {})
+}
+
 /**
  * Stubs fetch, the app's only way out to the network, and returns a 404 for any
  * URL not listed. Routes can be changed mid-test, e.g. to simulate a recovery.
+ * List a non-GET request as "POST /api/path".
  */
-export function mockApi(routes: Record<string, MockResponse>) {
-  const allRoutes: Record<string, MockResponse> = { '/api/categories': ok(CATEGORIES), ...routes }
+export function mockApi(routes: Record<string, MockResponse | Promise<MockResponse>>) {
+  const allRoutes: Record<string, MockResponse | Promise<MockResponse>> = {
+    '/api/categories': ok(CATEGORIES),
+    ...routes,
+  }
 
-  const fetchMock = vi.fn(async (url: string) => {
-    const { status, body } = allRoutes[url] ?? failure(404, { message: 'Not found' })
+  const fetchMock = vi.fn(async (url: string, init?: RequestInit) => {
+    const key = init?.method ? `${init.method} ${url}` : url
+    const { status, body } = await (allRoutes[key] ?? failure(404, { message: 'Not found' }))
 
     return new Response(typeof body === 'string' ? body : JSON.stringify(body), { status })
   })
@@ -53,6 +63,10 @@ export function mockApi(routes: Record<string, MockResponse>) {
   return {
     routes: allRoutes,
     calledUrls: () => fetchMock.mock.calls.map(([url]) => url),
+    postedBodies: () =>
+      fetchMock.mock.calls
+        .filter(([, init]) => init?.method === 'POST')
+        .map(([, init]) => JSON.parse(String(init?.body)) as unknown),
   }
 }
 
