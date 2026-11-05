@@ -46,15 +46,7 @@ Tests don't call the real Fake Store API, so they pass offline.
 | Category page | Done | Click a category: top rated first, then the rest |
 | Search | Done | Enter a term and click **Search** |
 | Product page | Done | Click a product tile |
-| Enquiry | API and email done, form not built yet | See below |
-
-Until the form is added, you can send an enquiry directly, then see the email at http://localhost:8025:
-
-```bash
-curl -X POST http://localhost:8000/api/enquiries \
-  -H 'Accept: application/json' -H 'Content-Type: application/json' \
-  -d '{"productId":5,"name":"Sam Taylor","email":"sam@example.com"}'
-```
+| Enquiry | Done | On a product page, click **Enquire** and send the form, then see the email at http://localhost:8025 |
 
 ## How it fits together
 
@@ -124,12 +116,10 @@ Code changes apply without a rebuild.
 
 ## Time spent
 
-**TODO before submitting: replace with your real hours.**
-
 | Activity | Time |
 |---|---|
-| Planning | TODO |
-| Building | TODO |
-| Testing | TODO |
-| Reviewing | TODO |
-| **Total** | **TODO** |
+| Planning | 3–4 hours |
+| Building | 3 hours |
+| Testing | 1 hour |
+| Reviewing | 1 day |
+| **Total** | **7–8 hours, plus 1 day of review** |
