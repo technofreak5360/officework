@@ -1,5 +1,6 @@
 <?php
 
+use App\Catalogue\CatalogueUnavailable;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -17,4 +18,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
+
+        // The underlying cause is still logged. Clients only get a generic message.
+        $exceptions->render(fn (CatalogueUnavailable $e) => response()->json(
+            ['message' => 'The product catalogue is temporarily unavailable. Please try again shortly.'],
+            503,
+        ));
     })->create();
